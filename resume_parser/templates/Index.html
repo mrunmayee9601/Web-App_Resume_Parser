@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Resume Parser</title>
+    <meta name="description" content="Flat UI Kit Free is a Twitter Bootstrap Framework design and Theme, this responsive framework includes a PSD and HTML version."/>
+    <meta name="viewport" content="width=1000, initial-scale=1.0, maximum-scale=1.0">
+    <link href="{% static 'css/vendor/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/flat-ui.css' %}" rel="stylesheet">
+    <link href="{% static 'css/demo.css' %}" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+<!----------------------------------------------------------------------------------------------->
+  <style type="text/css">
+        .upload-btn-wrapper {
+          position: relative;
+          overflow: hidden;
+          display: inline-block;
+        }
+        .btn {
+          border: 2px solid #2c3e50;
+          color: #2c3e50;
+          background-color: white;
+          padding: 8px 20px;
+          border-radius: 6px;
+          font-size: 17px;
+          font-weight: bold;
+          margin-left: 630px;
+        }
+        .upload-btn-wrapper input[type=file] {
+          font-size: 100px;
+          position: absolute;
+          left: 0;
+          top: 0;
+          opacity: 0;
+        }
+        #limit {
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #intro{
+          text-align: center;
+          font-size: 35px;
+        }
+        #sub-intro{
+          text-align: center;
+          font-size: 18px;
+        }
+        #clipboard{
+          max-width: 30px;
+          margin-left: 10px;
+          margin-right: -15px;
+        }
+        body{
+          color: #2c3e50;
+        }
+        table, th, td{
+          height: 35px;
+          border: 1px solid black;
+          border-collapse: collapse;
+          border-color:#2c3e50;
+          margin-left: auto;
+          margin-right: auto;
+          text-align: center;
+          font-size: 15px;
+        }
+        td{
+          padding-bottom: 5px;
+          padding-top: 5px;
+          text-align: left;
+          word-wrap:break-word;
+        }
+        th{
+          font-weight: bold;
+        }
+
+  </style>
+ </head>
+ <!----------------------------------------------------------------------------------------------->
+ <body>
+<!---NAVBAR--------->
+   <div class="row demo-row">
+     <div class="col" style="color: white;">
+       <nav class="navbar navbar-inverse navbar-embossed navbar-expand-lg" role="navigation">
+         <img src="{% static 'img/clipboard.svg' %}" alt="Clipboard" id="clipboard">
+         <a class="navbar-brand">ResumeParser</a>
+         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse-01"></button>
+         <div class="collapse navbar-collapse" id="navbar-collapse-01">
+           <ul class="nav navbar-nav mr-auto">
+             <li><a href="/home">Candidates</a></li>
+             <li><a href="/filtered">Filter</a></li>
+           </ul>
+         </div>
+       </nav><!-- /navbar -->
+     </div>
+   </div> <!-- /row -->
+<!---HEADING--------->
+   <div class="demo-type-example" >
+     <h1 id="intro"><span class="demo-heading-note"></span>Resume Parser</h1>
+   </div>
+   <div class="demo-type-example">
+     <span class="demo-text-note"></span>
+     <p class="lead" id="sub-intro">You currently have {{len}} candidates</p>
+   </div>
+<!---UPLOAD--------->
+<form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- <p>{{ form.non_field_errors }}</p> -->
+        <!-- <p>{{ form.pdf.label_tag }} </p> -->
+        <p style="margin-left:45vw;">
+                <!-- {{ form.pdf.errors }} -->
+                {{ form.pdf }}
+        </p>
+        <p><input type="submit" value="Upload" class='btn'style="margin-left:45vw;"></p>
+</form>
+<!---TABLE--------->
+   <div>
+     <table style="width:90%">
+
+       <tr>
+         <th style="width: 10%;">Candidate</th>
+         <th style="width: 20%;">Address</th>
+         <th style="width: 7%;">Contact</th>
+         <th style="width: 10%;">Languages</th>
+         <th style="width: 15%;">Resume Filename</th>
+       </tr>
+       {% for candidate in candidates %}
+       <tr>
+         <td>{{candidate.name}}</td>
+         <td>{{candidate.residence}}</td>
+         <td>{{candidate.number}}<br>{{candidate.email}}</td>
+         <!-- <td>{% for lang in candidate.languages %} {{lang}} {% endfor%}</td> -->
+         <td>{{candidate.languages}}</td>
+         <td>{{candidate.file_path}}</td>
+       </tr>
+       {% endfor %}
+     </table>
+   </div>
+<!---FILTER--------->
+<!----------------------------------------------------------------------------------------------->
+     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+     <script src="https://unpkg.com/popper.js@1.14.1/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+     <script src="http://vjs.zencdn.net/6.6.3/video.js"></script>
+     <script src="dist/scripts/flat-ui.js"></script>
+     <script src="docs/assets/js/application.js"></script>
+ </body>
+</html>
