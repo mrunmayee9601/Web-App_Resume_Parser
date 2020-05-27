@@ -10,19 +10,18 @@ def index(request):
     resumes=[]
     resume_txt=''
 
+    #File Upload
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             newdoc = Document(pdf = request.FILES['pdf'])
             newdoc.save()
-            print(newdoc.pdf.name)
-            # print(newdoc.pdf.size)
-            # print(rf"C:\Users\Seif\Desktop\Project - Copy\media\resumes\{newdoc.pdf.name[7:]}")
-            # resumes.append(os.path.join(os.getcwd(), f'..\media\{newdoc.pdf.name}'))
-            resumes.append(rf"C:\Users\Seif\Desktop\Project - Copy\media\resumes\{newdoc.pdf.name[7:]}")
+            media = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"/media/"
+            resume_path=os.path.join(media,newdoc.pdf.name)
+            resumes.append(resume_path.replace("\\","/"))
     else:
         form = DocumentForm()
-
+    #NLP
     for resume in resumes:
         for page in extract_text_from_pdf(resume):
             resume_txt += ' ' + page
@@ -32,41 +31,43 @@ def index(request):
         candidate.number=number(resume_txt)
         candidate.email=email(resume_txt)
         candidate.languages=languages(resume_txt)
-        candidate.file_path=str(resume[51:])
+        candidate.file_path=resume
         candidate.file_txt=resume_txt
         candidate.save()
         resume_txt=''
         candidate=None
 
     candidates=Candidate.objects.all()
+
     context={
-    "candidates":candidates,
-    "len":len(candidates),
-    "form":form
-    }
+        "candidates":candidates,
+        "len":len(candidates),
+        "form":form
+        }
     return render(request, 'Index.html', context)
 
 def filter(request):
     form = FilterForm()
     candidates=Candidate.objects.all()
-    successful_candidates=[]
+    matched_candidates=[]
     matched_skills=[]
-
-
+    #Filter Input and NLP
     if request.method == 'POST':
         form = FilterForm(request.POST)
         if form.is_valid():
             req_skills=(form.cleaned_data['skills'].replace(","," ")).split()
             for candidate in candidates:
                 if match_skills(candidate.file_txt,req_skills) != None:
-                    successful_candidates.append(candidate)
+                    matched_candidates.append(candidate)
                     matched_skills.append(match_skills(candidate.file_txt,req_skills))
-    output=dict(zip(successful_candidates,matched_skills))
+
+    l=len(matched_candidates)
+    output=dict(zip(matched_candidates,matched_skills))
+
     context={
     "form":form,
-    # "candidates":successful_candidates,
-    # "skills":matched_skills,
-    "len":len(successful_candidates),
+    "len":len(candidates),
     "output":output,
+    "l":l
     }
     return render(request, "Filter.html", context)

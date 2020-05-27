@@ -10,6 +10,7 @@ from spacy.matcher import Matcher
 import re
 from pprint import pprint
 from pathlib import Path
+import os
 nlp = spacy.load('en_core_web_sm')
 
 
@@ -87,7 +88,7 @@ def email(resume):
             return token.text.strip()
 def languages(resume):
     ## Storing all languages from a dataset (186)
-    data = pd.read_csv(r"C:\Users\Seif\Desktop\Project\resume_parser\src\Languages.csv", names=["a","b","c","language","d"])
+    data = pd.read_csv(os.path.join(os.path.dirname(os.path.abspath(__file__)),"src/Languages.csv").replace("\\","/"), names=["a","b","c","language","d"])
     languages = data.language.tolist()
     languages=[language.strip() for language in languages]
     ## Using Tockenization

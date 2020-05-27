@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'resume_parser',
     'reset_migrations',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
